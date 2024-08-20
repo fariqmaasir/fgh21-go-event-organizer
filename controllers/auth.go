@@ -41,8 +41,8 @@ func AuthLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized,
 			lib.Message{
 				Success: false,
-				Message: "OK",
-				Results: "Wrong Email or Password",
+				Message: "Wrong Email or Password",
+				// Results: "Wrong Email or Password",
 			})
 	}
 }

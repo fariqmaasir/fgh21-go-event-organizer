@@ -1,1 +1,1 @@
-drop table "categories";
+drop table "event_categories";

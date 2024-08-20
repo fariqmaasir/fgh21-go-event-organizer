@@ -26,3 +26,5 @@ func corsMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+//apakah koneksi di db pool / tidak

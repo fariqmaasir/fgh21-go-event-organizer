@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"math"
 	"net/http"
 	"strconv"
 
@@ -13,12 +14,39 @@ import (
 // var validate *validator.Validate
 
 func ListAllUsers(ctx *gin.Context) {
-	data := models.FindAllUsers()
+	search := ctx.Query("search")
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 5
+	}
+	data, totalData := models.FindAllEvents(search, page, limit)
+	totalPage := math.Ceil(float64(totalData) / float64(limit))
+	next := 0
+	prev := 0
+
+	if int(totalPage) > 1 {
+		next = int(totalPage) - page
+	}
+	if int(totalPage) > 1 {
+		prev = int(totalPage) - 1
+	}
 	ctx.JSON(http.StatusOK,
 		lib.Message{
 			Success: true,
 			Message: "OK",
 			Results: data,
+			PageInfo: PageInfo{
+				TotalData:  totalData,
+				TotalPages: int(totalPage),
+				PageLimit:  limit,
+				Page:       page,
+				Next:       next,
+				Prev:       prev,
+			},
 		})
 }
 

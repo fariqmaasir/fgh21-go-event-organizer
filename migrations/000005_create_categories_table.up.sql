@@ -1,4 +1,4 @@
-create table "categories"(
-	"id" serial primary key,
-	"name" varchar(30)
+create table "categories" (
+    "id" serial primary key,
+    "name" varchar(30)
 );

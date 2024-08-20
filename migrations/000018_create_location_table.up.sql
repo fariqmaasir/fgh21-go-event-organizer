@@ -1,0 +1,36 @@
+-- create Table locations (
+--     id serial primary key,
+--     image varchar(255),
+--     title varchar(100)
+-- );
+
+-- insert into
+--     locations ("image", "title")
+-- values (
+--         'https://i.pinimg.com/474x/d3/04/ba/d304ba77b59d5268f088685abac0a1ff.jpg',
+--         'Jakarta'
+--     ),
+--     (
+--         'https://i.pinimg.com/564x/bf/3c/ec/bf3cec84676ecc99e1da08e227fa605f.jpg',
+--         'Bandung'
+--     ),
+--     (
+--         'https://id.pinterest.com/pin/217439488250666706/',
+--         'Bali'
+--     ),
+--     (
+--         'https://id.pinterest.com/pin/2040762320695930/',
+--         'Aceh'
+--     ),
+--     (
+--         'https://id.pinterest.com/pin/386113368047754383/',
+--         'Solo'
+--     ),
+--     (
+--         'https://i.pinimg.com/736x/1e/8f/2b/1e8f2b6a7fc5cb938c49b4a810ac1f85.jpg',
+--         'Yogyakarta'
+--     ),
+--     (
+--         'https://i.pinimg.com/564x/77/4e/cf/774ecf0c1d5d590cd9e8d6aae610c67d.jpg',
+--         'Semarang'
+--     );

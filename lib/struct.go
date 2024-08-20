@@ -1,7 +1,8 @@
 package lib
 
 type Message struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message"`
-	Results interface{} `json:"results,omitempty"`
+	Success  bool   `json:"success"`
+	Message  string `json:"message"`
+	Results  any    `json:"results,omitempty"`
+	PageInfo any    `json:"pageInfo,omitempty"`
 }
