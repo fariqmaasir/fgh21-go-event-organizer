@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fariqmaasir/fgh21-go-event-organizer/lib"
+	"github.com/jackc/pgx/v5"
 )
 
 type Profile struct {
@@ -53,11 +54,12 @@ func CreateProfile(regist Regist) (*Profile, error) {
 	}
 
 	var profile Profile
+	picture := "http://localhost:8888/images/profile.jpg"
 	err = db.QueryRow(
 		context.Background(),
 		`INSERT INTO "profile" ("picture", "full_name", "birth_date", "gender", "phone_number", "profession", "nationality_id", "user_id") 
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, picture, full_name, birth_date, gender, phone_number, profession, nationality_id, user_id`,
-		regist.Picture, regist.FullName, regist.BirthDate, regist.Gender,
+		picture, regist.FullName, regist.BirthDate, regist.Gender,
 		regist.PhoneNumber, regist.Profession, regist.NationalityId, userId,
 	).Scan(
 		&profile.Id,
@@ -78,6 +80,25 @@ func CreateProfile(regist Regist) (*Profile, error) {
 	}
 
 	return &profile, nil
+}
+
+func UpdateProfileImage(data Profile, id int) (Profile, error) {
+	db := lib.DB()
+	defer db.Close(context.Background())
+
+	sql := `UPDATE profile SET picture = $1 WHERE user_id=$2 returning *`
+
+	row, err := db.Query(context.Background(), sql, data.Picture, id)
+	if err != nil {
+		return Profile{}, nil
+	}
+
+	profile, err := pgx.CollectOneRow(row, pgx.RowToStructByName[Profile])
+	if err != nil {
+		return Profile{}, nil
+	}
+
+	return profile, nil
 }
 
 func FindOneProfile(id int) (*Regist, error) {
@@ -126,20 +147,20 @@ func EditProfile(regist Regist, id int) (*Profile, error) {
 	var profile Profile
 	err = db.QueryRow(
 		context.Background(),
-		`update "profile" set ("full_name", "gender", "phone_number", "profession") 
-		= ($1, $2, $3, $4) where user_id = $5 RETURNING id, full_name, gender, phone_number, profession`,
-		regist.FullName, regist.Gender,
-		regist.PhoneNumber, regist.Profession, id,
+		`update "profile" set ("full_name", "birth_date", "gender", "phone_number", "profession", "nationality_id") 
+		= ($1, $2, $3, $4, $5, $6) where user_id = $7 RETURNING id, picture, full_name, birth_date, gender, phone_number, profession, nationality_id, user_id`,
+		regist.FullName, regist.BirthDate, regist.Gender,
+		regist.PhoneNumber, regist.Profession, regist.NationalityId, id,
 	).Scan(
 		&profile.Id,
-		// &profile.Picture,
+		&profile.Picture,
 		&profile.FullName,
-		// &profile.BirthDate,
+		&profile.BirthDate,
 		&profile.Gender,
 		&profile.PhoneNumber,
 		&profile.Profession,
-		// &profile.NationalityId,
-		// &profile.UserId,
+		&profile.NationalityId,
+		&profile.UserId,
 	)
 
 	fmt.Println(err)

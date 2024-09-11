@@ -88,6 +88,7 @@ func FindAllEvents(search string, page int, limit int) ([]Events, int) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(totalData)
 	return events, totalData
 }
 

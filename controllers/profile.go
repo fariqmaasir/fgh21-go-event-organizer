@@ -3,10 +3,13 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
+	"strings"
 
 	"github.com/fariqmaasir/fgh21-go-event-organizer/lib"
 	"github.com/fariqmaasir/fgh21-go-event-organizer/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func CreateProfileUser(ctx *gin.Context) {
@@ -27,7 +30,7 @@ func CreateProfileUser(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
 			lib.Message{
-				Success: true,
+				Success: false,
 				Message: "Users Failed To Created",
 				Results: result,
 			})
@@ -56,7 +59,7 @@ func DetailProfile(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK,
 		lib.Message{
 			Success: true,
-			Message: "OK",
+			Message: "Create Profile Success",
 			Results: data,
 		})
 }
@@ -76,7 +79,7 @@ func ChangeUserPassword(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest,
 			lib.Message{
 				Success: false,
-				Message: "Acc Not Found",
+				Message: "Incorrect Password",
 				// Results: data,
 			})
 		return
@@ -108,9 +111,9 @@ func EditProfileUser(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
 			lib.Message{
-				Success: true,
+				Success: false,
 				Message: "Users Failed To Find",
-				Results: result,
+				// Results: result,
 			})
 		return
 	}
@@ -118,6 +121,64 @@ func EditProfileUser(ctx *gin.Context) {
 		lib.Message{
 			Success: true,
 			Message: "Edit User success",
+			Results: result,
+		})
+}
+
+func UploadProfileImage(c *gin.Context) {
+	id := c.GetInt("userId")
+	fmt.Println(id)
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			lib.Message{
+				Success: true,
+				Message: "no files uploaded",
+				// Results: result,
+			})
+		return
+	}
+	allowExt := map[string]bool{".jpg": true, ".jpeg": true, ".png": true}
+	fileExt := strings.ToLower(filepath.Ext(file.Filename))
+	if !allowExt[fileExt] {
+		c.JSON(http.StatusBadRequest,
+			lib.Message{
+				Success: true,
+				Message: "no files uploaded",
+				// Results: result,
+			})
+		return
+	}
+
+	image := uuid.New().String() + fileExt
+
+	root := "./images/"
+	if err := c.SaveUploadedFile(file, root+image); err != nil {
+		c.JSON(http.StatusBadRequest,
+			lib.Message{
+				Success: false,
+				Message: "Upload image failed",
+			})
+		return
+	}
+	fmt.Println(err)
+	img := "http://localhost:8888/images/" + image
+
+	result, err := models.UpdateProfileImage(models.Profile{Picture: &img}, id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			lib.Message{
+				Success: true,
+				Message: "Update image failed",
+			})
+		return
+	}
+	c.JSON(http.StatusOK,
+		lib.Message{
+			Success: true,
+			Message: "Upload image success",
 			Results: result,
 		})
 }

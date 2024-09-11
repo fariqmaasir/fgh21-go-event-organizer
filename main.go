@@ -8,9 +8,10 @@ import (
 func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
+	r.Static("/images", "./images")
 
 	routers.RouterCombine(r)
-	r.Run("localhost:8888")
+	r.Run("0.0.0.0:8888")
 }
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

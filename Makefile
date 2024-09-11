@@ -1,14 +1,14 @@
-host ?= localhost
+host ?= 172.17.0.2
 port ?= 5432
 user ?= postgres
-pass ?= 32788a444163454cac61c1d26a0cdfb1
+pass ?= 1
 db ?= event_organizer
 
 migrate\:init:
-	psql -U$(user) -d postgres -p $(port) -c "create database $(db);"
+	PGPASSWORD=$(pass) psql -U$(user) -h $(host) -d postgres -p $(port) -c "create database $(db);"
 
 migrate\:drop:
-	psql -U$(user) -d postgres -p $(port) -c "drop database if exists $(db) with (force);"
+	PGPASSWORD=$(pass) psql -U$(user) -h $(host) -d postgres -p $(port) -c "drop database if exists $(db) with (force);"
 
 migrate\:up:
 	migrate -database postgresql://$(user):$(pass)@$(host):$(port)/$(db)?sslmode=disable -path migrations up $(version)
@@ -30,3 +30,6 @@ migrate\:alter:
 
 migrate\:insert:
 	migrate create -ext sql -dir migrations -seq insert_$(table)_table
+
+run:
+	nodemon --exec go run main.go --signal SIGTERM

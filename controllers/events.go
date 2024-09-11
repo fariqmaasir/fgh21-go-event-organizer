@@ -28,9 +28,6 @@ func CreateEvents(ctx *gin.Context) {
 		return
 	}
 	id, _ := ctx.Get("userId")
-	fmt.Print("----")
-	fmt.Print()
-	fmt.Println(event)
 	result, err := models.CreateOneEvent(event, id.(int))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, lib.Message{
@@ -58,6 +55,7 @@ func ListAllEvents(ctx *gin.Context) {
 		limit = 5
 	}
 	data, totalData := models.FindAllEvents(search, page, limit)
+	fmt.Println(limit)
 	totalPage := math.Ceil(float64(totalData) / float64(limit))
 	next := 0
 	prev := 0
