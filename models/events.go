@@ -130,7 +130,7 @@ func DeleteOneEvent(id int) (*Events, error) {
 	return &event, nil
 }
 
-func FindOneEvent(id int) []Events {
+func FindOneEvent(id int) Events {
 	db := lib.DB()
 	defer db.Close(context.Background())
 
@@ -140,7 +140,7 @@ func FindOneEvent(id int) []Events {
 		id,
 	)
 
-	users, err := pgx.CollectRows(rows, pgx.RowToStructByPos[Events])
+	users, err := pgx.CollectOneRow(rows, pgx.RowToStructByPos[Events])
 
 	if err != nil {
 		fmt.Println(err)
