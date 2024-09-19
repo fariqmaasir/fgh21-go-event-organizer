@@ -1,12 +1,15 @@
 # FROM debian
-FROM golang:latest
+FROM golang:1.23-alpine
 
 WORKDIR /app
 
 COPY . /app/
 
-RUN go mod download && go mod verify
-RUN apt-get update
+RUN go mod tidy && go build -o binary
+
+EXPOSE 8888
+
+ENTRYPOINT [ "/app/binary" ]
 # apt-get install bison curl \
 # git bsdmainutils \
 # make gcc binutils postgresql-client nodejs npm -y
@@ -27,12 +30,8 @@ RUN apt-get update
 
 # RUN /bin/bash -i -c "npm i -g nodemon"
 
-COPY . /app/
 
 # RUN /bin/bash -i -c "source /root/.gvm/scripts/gvm && go mod tidy"
 
-EXPOSE 8888
-
-ENTRYPOINT go run main.go
 
 # ENTRYPOINT /bin/bash -i -c "source /root/.gvm/scripts/gvm && go run main.go"
