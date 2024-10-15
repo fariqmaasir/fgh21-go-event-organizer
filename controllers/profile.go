@@ -163,7 +163,7 @@ func UploadProfileImage(c *gin.Context) {
 		return
 	}
 	fmt.Println(err)
-	img := "http://localhost:8888/images/" + image
+	img := "http://103.93.58.89:21217/images/" + image
 
 	result, err := models.UpdateProfileImage(models.Profile{Picture: &img}, id)
 

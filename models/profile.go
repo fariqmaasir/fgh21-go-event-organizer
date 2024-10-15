@@ -54,7 +54,7 @@ func CreateProfile(regist Regist) (*Profile, error) {
 	}
 
 	var profile Profile
-	picture := "http://localhost:8888/images/profile.jpg"
+	picture := "http://103.93.58.89:21217/images/profile.jpg"
 	err = db.QueryRow(
 		context.Background(),
 		`INSERT INTO "profile" ("picture", "full_name", "birth_date", "gender", "phone_number", "profession", "nationality_id", "user_id") 

@@ -76,6 +76,7 @@ func FindAllEvents(search string, page int, limit int) ([]Events, int) {
 		SELECT * from "events" 
 		WHERE "title" 
 		ilike '%' || ($1) || '%'
+		ORDER BY "title" ASC
 		limit ($2)
 		offset ($3)
 		`,
